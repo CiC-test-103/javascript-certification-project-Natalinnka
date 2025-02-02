@@ -1,6 +1,7 @@
 // Necessary Imports, DO NOT REMOVE
+const { Console } = require("console");
 const { LinkedList } = require("./LinkedList");
-const { Student } = require('./Student')
+const { Student } = require('./Student');
 const readline = require('readline');
 
 // Initialize terminal interface
@@ -44,11 +45,11 @@ async function handleCommand(command) {
        *   - Grab the args (code is given)
        *   - Use implemented functions in LinkedList to add the Student, and display the updated LinkedList
        */
-        console.log('Adding student...')
-        const [name, year, email, specialization] = args
-        // --------> WRITE YOUR CODE BELOW
-
-        // --------> WRITE YOUR CODE ABOVE
+        console.log('Adding student...');
+        const [name, year, email, specialization] = args;
+        const newStudent = new Student(name, parseInt(year), email, specialization);
+        studentManagementSystem.addStudent(newStudent);
+        console.log('Updated list:', studentManagementSystem.displayStudents());
         break;
 
     case 'remove':
@@ -61,23 +62,39 @@ async function handleCommand(command) {
        *   - Use implemented functions in LinkedList to remove the Student, and display the updated LinkedList
        */
       console.log('Removing student...')
-      // --------> WRITE YOUR CODE BELOW
-      
-      // --------> WRITE YOUR CODE ABOVE
+      const removeEmail = args[0];
+      studentManagementSystem.removeStudent(removeEmail);
+      console.log('Updated list:', studentManagementSystem.displayStudents());  
       break;
 
     case 'display':
-      /**
+       /**
        * TODO:
        *  Displays the students in the Linked List
        *  You will need to do the following:
        *   - Use implemneted functions in LinkedList to display the student
        */
-      console.log('Displaying students...')
-      // --------> WRITE YOUR CODE BELOW
+        console.log('Displaying students...');
+        const students = studentManagementSystem.displayStudents();
+      
+        if (!students || students.length === 0) {
+          console.log("No students found.");
+        } else {
+          console.log(students); 
+        }
+        break;
 
-      // --------> WRITE YOUR CODE ABOVE
-      break;
+
+
+     
+       if (!students || students.length === 0) {
+        console.log("No students found.");
+    } else {
+     console.log("Current students:");
+     console.log(`Name: ${Student.name} Year: ${Student.year} Email: ${Student.email} Specialization: ${Student.specialization}`);  
+    }
+    break;
+
 
     case 'find':
       /**
@@ -90,9 +107,14 @@ async function handleCommand(command) {
        *   - Use implemented functions in Student to display if found, otherwise, state "Student does not exist"
        */
       console.log('Finding student...')
-      // --------> WRITE YOUR CODE BELOW
-      
-      // --------> WRITE YOUR CODE ABOVE
+      const emailToFind = args[0];  
+      const foundStudent = studentManagementSystem.findStudent(emailToFind);
+
+       if (foundStudent) {
+         console.log(`Student found: ${foundStudent.getName()}, Year: ${foundStudent.getYear()}, Email: ${foundStudent.getEmail()}, Specialization: ${foundStudent.getSpecialization()}`);
+       } else {
+         console.log("Student not found.");
+       }
       break;
 
     case 'save':
@@ -104,10 +126,11 @@ async function handleCommand(command) {
        *   - Grab the args (saveFileName)
        *   - Use implemented functions in LinkedList to save the data
        */
-      console.log('Saving data...')
-      // --------> WRITE YOUR CODE BELOW
-
-      // --------> WRITE YOUR CODE ABOVE
+      console.log('Saving data...');
+      const saveFileName = args[0];
+      await studentManagementSystem.saveToJson(saveFileName);
+      console.log(`Data saved to file: ${saveFileName}`);
+      break;
 
     case "load":
       /**
@@ -118,10 +141,11 @@ async function handleCommand(command) {
        *   - Grab the args (loadFileName)
        *   - Use implemented functions in LinkedList to save the data, and display the updated LinkedList
        */
-      console.log('Loading data...')
-      // --------> WRITE YOUR CODE BELOW
-
-      // --------> WRITE YOUR CODE ABOVE
+      console.log('Loading data...');
+      const loadFileName = args[0];
+      await studentManagementSystem.loadFromJSON(loadFileName);
+      console.log(`Data loaded from file: ${loadFileName}`);
+      console.log('Updated list:', studentManagementSystem.displayStudents());
       break;
 
     case 'clear':
@@ -133,9 +157,8 @@ async function handleCommand(command) {
        *   - Use implemented functions in LinkedList to clear the data
        */
       console.log('Clearing data...')
-      // --------> WRITE YOUR CODE BELOW
-
-      // --------> WRITE YOUR CODE ABOVE
+      studentManagementSystem.clearStudents();
+      console.log("All student data cleared.");
       break;
 
     case 'q':
